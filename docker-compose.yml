@@ -1,0 +1,57 @@
+version: '2'
+services:
+  nginx:
+    image: nginx:alpine
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx/conf:/etc/nginx/conf.d
+      - ./web/staticfiles:/django_static
+    ports:
+      - "8088:80"
+    depends_on:
+      - web
+    networks:
+      - owncloud_default
+
+  redis:
+    image: redis:alpine
+    expose:
+      - "6379"
+    restart: always
+    networks:
+      - owncloud_default
+
+  web:
+    build: .
+    command: python manage.py runserver 0:8000
+    ports:
+      - "8000:8000"
+    command: uwsgi --ini uwsgi.ini
+    working_dir: /code/web
+    volumes:
+      - .:/code
+    expose:
+      - "8000"
+    depends_on:
+      - redis
+    external_links: 
+      - mysql_5
+    networks:
+      - owncloud_default
+
+  celery:
+    build: .
+    command: celery -A web worker -l info
+    working_dir: /code/web
+    volumes:
+      - .:/code
+    depends_on:
+      - redis
+    external_links: 
+      - mysql_5
+    networks:
+      - owncloud_default
+
+networks:
+  owncloud_default:
+    external: true
