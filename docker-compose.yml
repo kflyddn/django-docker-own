@@ -9,10 +9,10 @@ services:
     ports:
       - 3306:3306
     environment:
-      - MYSQL_ROOT_PASSWORD: zblj1211
-      - MYSQL_DATABASE: djangodocker
-      - MYSQL_USER: python
-      - MYSQL_PASSWORD: python-pass
+      - MYSQL_ROOT_PASSWORD: "zblj1211"
+      - MYSQL_DATABASE: "djangodocker"
+      - MYSQL_USER: "python"
+      - MYSQL_PASSWORD: "python-pass"
 
   nginx:
     image: nginx:alpine
