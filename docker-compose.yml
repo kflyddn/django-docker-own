@@ -6,7 +6,7 @@ services:
     image: mysql:5.6
     volumes:
       - "/srv/dev-disk-by-label-data/docker-container/mysql_data:/var/lib/mysql"
-    expose:
+    ports:
       - 3306:3306
     environment:
       - MYSQL_ROOT_PASSWORD: zblj1211
