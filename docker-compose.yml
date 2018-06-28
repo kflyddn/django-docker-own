@@ -1,5 +1,19 @@
-version: '2'
+version: '3'
+
 services:
+  mysql:
+    image: mysql:5.7
+    volumes:
+      - ./mysql:/var/lib/mysql
+    expose:
+      - "3306"
+    restart: always
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=djangodocker
+      - MYSQL_USER=django
+      - MYSQL_PASSWORD=django
+
   nginx:
     image: nginx:alpine
     volumes:
@@ -7,25 +21,21 @@ services:
       - ./nginx/conf:/etc/nginx/conf.d
       - ./web/staticfiles:/django_static
     ports:
-      - "8088:80"
+      - "80:80"
     depends_on:
       - web
-    networks:
-      - owncloud_default
 
   redis:
     image: redis:alpine
     expose:
       - "6379"
     restart: always
-    networks:
-      - owncloud_default
 
   web:
     build: .
-    command: python manage.py runserver 0:8000
-    ports:
-      - "8000:8000"
+    # command: python manage.py runserver 0:8000
+    # ports:
+    #   - "8000:8000"
     command: uwsgi --ini uwsgi.ini
     working_dir: /code/web
     volumes:
@@ -33,11 +43,8 @@ services:
     expose:
       - "8000"
     depends_on:
+      - mysql
       - redis
-    external_links: 
-      - mysql_5
-    networks:
-      - owncloud_default
 
   celery:
     build: .
@@ -46,12 +53,5 @@ services:
     volumes:
       - .:/code
     depends_on:
+      - mysql
       - redis
-    external_links: 
-      - mysql_5
-    networks:
-      - owncloud_default
-
-networks:
-  owncloud_default:
-    external: true
