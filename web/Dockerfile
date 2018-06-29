@@ -8,7 +8,7 @@ ENV PYTHONUNBUFFERED=1
 RUN apk update && apk upgrade \
  && apk add --no-cache tzdata \
  bash bash-doc bash-completion \
- libmysqlclient-dev python3-dev \
+ mysql-client \
  && rm -rf /var/cache/apk/*
 
 # Settings for the local user
