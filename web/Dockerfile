@@ -8,6 +8,7 @@ ENV PYTHONUNBUFFERED=1
 RUN apk update && apk upgrade \
  && apk add --no-cache tzdata \
  bash bash-doc bash-completion \
+ mysql-devel gcc gcc-devel python-devel \
  && rm -rf /var/cache/apk/*
 
 # Settings for the local user
